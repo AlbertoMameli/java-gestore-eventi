@@ -53,22 +53,28 @@ public class Evento {
         if (isCapienzaValida(postiTotali)) {
             this.postiTotali = postiTotali;
 
-        } else{
-            throw new RuntimeException("Il numero di posti " + postiTotali + " non è valido, verificare che sia maggiore di 0.");
+        } else {
+            throw new RuntimeException(
+                    "Il numero di posti " + postiTotali + " non è valido, verificare che sia maggiore di 0.");
 
         }
-        
+
         this.postiPrenotati = 0;
 
     }
-
 
     public String getTitoloEvento() {
         return this.titoloEvento;
     }
 
-    public void setTitoloEvento(String titoloEvento) {
-        this.titoloEvento = titoloEvento;
+    public void setTitoloEvento(String titoloEvento) throws RuntimeException { // controllo cosa inserisce l'utente nel
+                                                                               // mentre che si esegue il codice
+        if (isTitoloEventoValido((titoloEvento))) {
+            this.titoloEvento = titoloEvento;
+        } else {
+            throw new RuntimeException("Inserisci il titolo");
+        }
+
     }
 
     public int getPostiTotali() {
@@ -83,16 +89,28 @@ public class Evento {
         return this.postiPrenotati;
     }
 
-    public void setPostiPrenotati(int postiPrenotati) {
-        this.postiPrenotati = postiPrenotati;
+    public void setPostiPrenotati(int postiPrenotati) throws RuntimeException {
+        if (postiPrenotati <= postiTotali && postiPrenotati >= 0) {
+            this.postiPrenotati = postiPrenotati;
+        } else {
+            throw new RuntimeException(
+                    "Il numero di posti deve essere minore dei posti totali e non può essere infeririore a 0.");
+        }
+
     }
 
     public LocalDate getData() {
         return this.data;
     }
 
-    public void setData(LocalDate data) {
-        this.data = data;
+    public void setData(LocalDate data) throws RuntimeException {
+        if (isEventoValido(data)) {
+            this.data = data;
+        } else {
+            throw new RuntimeException("La data " + data.format(dataFormattata)
+                    + " non è valida, verifica che non sia precedente alla data odierna!");
+        }
+
     }
 
     public DateTimeFormatter getDataFormattata() {
@@ -103,5 +121,31 @@ public class Evento {
         this.dataFormattata = dataFormattata;
     }
 
+    // metodi
 
+    public void prenotaPosto() { // se soddisfa le condizioni allora si può aggiungere una prenotazione
+        if (isEventoPassato()) {
+            throw new RuntimeException("L'evento è già passato, non è possibile prenotare.");
+        }
+        if (postiPrenotati >= postiTotali) {
+            throw new RuntimeException("Posti esauriti, non è possibile prenotare");
+        }
+        postiPrenotati++;
+    }
+
+    public void disdiciPrenotazione() {
+        if (isEventoPassato()) {
+            throw new RuntimeException("L'evento è gia passato, non puoi disdire.");
+        }
+        if (postiPrenotati <= 0) {
+            throw new RuntimeException("Non è possibile disdire, devi prima prenotare.");
+        }
+        postiPrenotati--;
+
+    }
+
+    @Override
+    public String toString() {
+        return data.format(dataFormattata) + "-" + titoloEvento;
+    }
 }
