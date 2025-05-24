@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 public class Evento {
     // Variabili d'istanza
     private String titoloEvento;
-    private int postiTotali;
+    private final int postiTotali;
     private int postiPrenotati;
     private LocalDate data;
     private DateTimeFormatter dataFormattata = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // formatto la data in giorno
@@ -17,11 +17,6 @@ public class Evento {
 
     public static boolean isTitoloEventoValido(String titoloEvento) {
         return titoloEvento != null && !titoloEvento.isBlank();
-    }
-
-    private boolean isEventoPassato() { // verifica se l'evento è gia passato o no
-        LocalDate giornoSeguente = LocalDate.now(); // data
-        return giornoSeguente.isAfter(this.data);
     }
 
     public static boolean isEventoValido(LocalDate data) { // verifica se l'evento trasformato in parametro si svolge in
@@ -35,7 +30,7 @@ public class Evento {
     }
 
     // costruttore
-    public Evento(String titoloEvento, LocalDate data, int postiTotali) throws RuntimeException {
+    public Evento(String titoloEvento, LocalDate data, int postiTotali) {
         if (isTitoloEventoValido(titoloEvento)) {
             this.titoloEvento = titoloEvento;
         } else {
@@ -63,11 +58,14 @@ public class Evento {
 
     }
 
+
+    //Getter e Setter
+
     public String getTitoloEvento() {
         return this.titoloEvento;
     }
 
-    public void setTitoloEvento(String titoloEvento) throws RuntimeException { // controllo cosa inserisce l'utente nel
+    public void setTitoloEvento(String titoloEvento) { // controllo cosa inserisce l'utente nel
                                                                                // mentre che si esegue il codice
         if (isTitoloEventoValido((titoloEvento))) {
             this.titoloEvento = titoloEvento;
@@ -81,15 +79,11 @@ public class Evento {
         return this.postiTotali;
     }
 
-    public void setPostiTotali(int postiTotali) {
-        this.postiTotali = postiTotali;
-    }
-
     public int getPostiPrenotati() {
         return this.postiPrenotati;
     }
 
-    public void setPostiPrenotati(int postiPrenotati) throws RuntimeException {
+    public void setPostiPrenotati(int postiPrenotati) {
         if (postiPrenotati <= postiTotali && postiPrenotati >= 0) {
             this.postiPrenotati = postiPrenotati;
         } else {
@@ -103,7 +97,7 @@ public class Evento {
         return this.data;
     }
 
-    public void setData(LocalDate data) throws RuntimeException {
+    public void setData(LocalDate data) {
         if (isEventoValido(data)) {
             this.data = data;
         } else {
@@ -119,6 +113,11 @@ public class Evento {
 
     public void setDataFormattata(DateTimeFormatter dataFormattata) {
         this.dataFormattata = dataFormattata;
+    }
+
+    private boolean isEventoPassato() { // verifica se l'evento è gia passato o no
+        LocalDate giornoSeguente = LocalDate.now(); // data
+        return giornoSeguente.isAfter(this.data);
     }
 
     // metodi
@@ -142,6 +141,11 @@ public class Evento {
         }
         postiPrenotati--;
 
+    }
+
+     public String getInfoEvento() {
+        return "Evento: " + titoloEvento + " | Data: " + data.format(dataFormattata)
+               + " | Posti prenotati: " + postiPrenotati + "/" + postiTotali;
     }
 
     @Override
