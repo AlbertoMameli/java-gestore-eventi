@@ -21,8 +21,8 @@ public class Evento {
 
     public static boolean isEventoValido(LocalDate data) { // verifica se l'evento trasformato in parametro si svolge in
                                                            // futuro
-        LocalDate giornoSeguente = LocalDate.now(); // data di oggi
-        return data.isAfter(giornoSeguente); // confronto con data ricevuta
+        LocalDate giornoSeguente = LocalDate.now(); // data di oggi    // 
+        return !data.isBefore(giornoSeguente); // confronto con data ricevuta
     }
 
     public static boolean isCapienzaValida(int postiTotali) { // numeri postitotali deve essere maggiore di 0
