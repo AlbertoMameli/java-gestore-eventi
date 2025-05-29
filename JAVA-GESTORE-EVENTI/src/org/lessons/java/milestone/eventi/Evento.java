@@ -21,7 +21,7 @@ public class Evento {
 
     public static boolean isEventoValido(LocalDate data) { // verifica se l'evento trasformato in parametro si svolge in
                                                            // futuro
-        LocalDate giornoSeguente = LocalDate.now(); // data di oggi    // 
+        LocalDate giornoSeguente = LocalDate.now(); // data di oggi //
         return !data.isBefore(giornoSeguente); // confronto con data ricevuta
     }
 
@@ -58,15 +58,14 @@ public class Evento {
 
     }
 
-
-    //Getter e Setter
+    // Getter e Setter
 
     public String getTitoloEvento() {
         return this.titoloEvento;
     }
 
     public void setTitoloEvento(String titoloEvento) { // controllo cosa inserisce l'utente nel
-                                                                               // mentre che si esegue il codice
+                                                       // mentre che si esegue il codice
         if (isTitoloEventoValido((titoloEvento))) {
             this.titoloEvento = titoloEvento;
         } else {
@@ -143,9 +142,9 @@ public class Evento {
 
     }
 
-     public String getInfoEvento() {
+    public String getInfoEvento() {
         return "Evento: " + titoloEvento + " | Data: " + data.format(dataFormattata)
-               + " | Posti prenotati: " + postiPrenotati + "/" + postiTotali;
+                + " | Posti prenotati: " + postiPrenotati + "/" + postiTotali;
     }
 
     @Override

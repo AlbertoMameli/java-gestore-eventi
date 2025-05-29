@@ -43,7 +43,7 @@ public class Main {
             }
 
             Evento evento = new Evento(titolo, data, postiTotali);
-            System.out.println("✅ Evento creato:\n" + evento.getInfoEvento());
+            System.out.println(evento.getInfoEvento());
 
             gestisciPrenotazioni(evento, scanner);
             gestisciDisdette(evento, scanner);
