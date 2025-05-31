@@ -1,7 +1,10 @@
-package org.lessons.java.milestone.eventi;
+package org.lessons.java.milestone.eventi.Tester;
 
 import java.time.LocalDate;
 import java.util.Scanner;
+
+import org.lessons.java.milestone.eventi.Evento;
+import org.lessons.java.milestone.eventi.ProgrammaEventi;
 
 public class Testing {
     public static void main(String[] args) {

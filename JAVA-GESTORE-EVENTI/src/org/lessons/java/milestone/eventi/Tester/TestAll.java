@@ -1,8 +1,12 @@
-package org.lessons.java.milestone.eventi;
+package org.lessons.java.milestone.eventi.Tester;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import org.lessons.java.milestone.eventi.Concerto;
+import org.lessons.java.milestone.eventi.Evento;
+import org.lessons.java.milestone.eventi.ProgrammaEventi;
 
 public class TestAll {
     public static void main(String[] args) {

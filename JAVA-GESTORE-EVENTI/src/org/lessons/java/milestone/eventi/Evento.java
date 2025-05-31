@@ -9,9 +9,10 @@ public class Evento {
     private final int postiTotali; // final che non può cambiare
     private int postiPrenotati;
     private LocalDate data;
-    private static final DateTimeFormatter dataFormattata = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // formatto la data in giorno
-                                                                                          // mese e anno con il pattern
-                                                                                          // nostro..
+    private static final DateTimeFormatter dataFormattata = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // formatto la
+                                                                                                       // data in giorno
+    // mese e anno con il pattern
+    // nostro..
 
     // validatori del mio evento statici
 
@@ -110,7 +111,6 @@ public class Evento {
         return dataFormattata;
     }
 
-   
     private boolean isEventoPassato() { // verifica se l'evento è gia passato o no
         LocalDate giornoSeguente = LocalDate.now(); // data
         return giornoSeguente.isAfter(this.data);
@@ -118,11 +118,6 @@ public class Evento {
 
     // metodi
 
-  /* private static final DateTimeFormatter newDataFormattata = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    public static DateTimeFormatter getNEwDataFormattata() {
-        return newDataFormattata;
-    }
- */ 
     public void prenotaPosto() { // se soddisfa le condizioni allora si può aggiungere una prenotazione
         if (isEventoPassato()) {
             throw new RuntimeException("L'evento è già passato, non è possibile prenotare.");
@@ -145,8 +140,8 @@ public class Evento {
     }
 
     public String getInfoEvento() {
-        return "Evento: " + titoloEvento + " | Data: " + data.format(dataFormattata)
-                + " | Posti prenotati: " + postiPrenotati + "/" + postiTotali;
+        return "Evento: " + titoloEvento + " | Data: " + data.format(dataFormattata) + " | Posti prenotati: "
+                + postiPrenotati + "/" + postiTotali;
     }
 
     @Override
