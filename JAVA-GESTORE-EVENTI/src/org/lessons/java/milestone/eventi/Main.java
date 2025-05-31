@@ -17,7 +17,7 @@ public class Main {
 
             LocalDate data = null;
             while (data == null) {
-                System.out.println("Inserisci la data (gg/MM/yyyy):");
+                System.out.println("Inserisci la data (gg/mm/yyyy):");
                 try {
                     data = LocalDate.parse(scanner.nextLine(), formatter);
                     if (data.isBefore(LocalDate.now())) {

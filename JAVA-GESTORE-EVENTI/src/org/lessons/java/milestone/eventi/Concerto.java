@@ -51,7 +51,7 @@ public class Concerto extends Evento {
 
     @Override
     public String toString() {
-        return getDataOraFormattata() + "-" + getTitoloEvento() + "-" + getPrezzoFormattato();
+        return super.toString() + "-" + getPrezzoFormattato();
     }
 
 }
