@@ -16,8 +16,7 @@ public class Concerto extends Evento {
     private static final DateTimeFormatter orarioFormattato = DateTimeFormatter.ofPattern("HH:mm");
     private static final DecimalFormat prezzoFormattato = new DecimalFormat("###,##0.00 €");
 
-    public Concerto(String titoloEvento, LocalDate data, int postiTotali, LocalTime oraConcerto,
-            BigDecimal prezzoConcerto) {
+    public Concerto(String titoloEvento, LocalDate data, int postiTotali, LocalTime oraConcerto, BigDecimal prezzoConcerto) {
         super(titoloEvento, data, postiTotali);
         this.oraConcerto = oraConcerto;
         this.prezzoConcerto = prezzoConcerto;

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collector;
+
 import java.util.stream.Collectors;
 
 public class ProgrammaEventi {
@@ -13,34 +13,32 @@ public class ProgrammaEventi {
 
     public ProgrammaEventi(String titolo) {
         this.titolo = titolo;
-        this.eventi =new ArrayList<>();
+        this.eventi = new ArrayList<>();
     }
 
-    public void aggiungiEvento (Evento evento){
+    public void aggiungiEvento(Evento evento) {
         eventi.add(evento);
     }
 
-
-    public List<Evento> getEventiInData(LocalDate data){
+    public List<Evento> getEventiInData(LocalDate data) {
         List<Evento> eventiInData = new ArrayList<>();
-        for (Evento e : eventi){
-            if(e.getData().equals(data)){
+        for (Evento e : eventi) {
+            if (e.getData().equals(data)) {
                 eventiInData.add(e);
             }
         }
         return eventiInData;
     }
 
-    public int getNumeroEventi(){
+    public int getNumeroEventi() {
         return eventi.size();
     }
 
-
-    
-    public void svuotaEventi(){
+    public void svuotaEventi() {
         eventi.clear();
     }
-//getter e setter automatizzati
+
+    // getter e setter automatizzati
     public String getTitolo() {
         return this.titolo;
     }
@@ -59,8 +57,9 @@ public class ProgrammaEventi {
 
     // metodo che stampa gli eventi in ordine in base alla data
 
-    public String stampaEventoPerData(){
-      return titolo + "\n" + eventi.stream().sorted(Comparator.comparing(Evento::getData)).map(Evento::toString).collect(Collectors.joining("\n"));
+    public String stampaEventiPerData() {
+        return titolo + "\n" + eventi.stream().sorted(Comparator.comparing(Evento::getData)).map(Evento::toString)  //sorted ordina gli eventiin base data--map cpnverte ogni evento nel formato toString
+                .collect(Collectors.joining("\n")); //unisce le stringhe
 
     }
 

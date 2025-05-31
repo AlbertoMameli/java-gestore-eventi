@@ -4,18 +4,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Evento {
-    // Variabili d'istanza
+    // Variabili di istanza
     private String titoloEvento;
-    private final int postiTotali;
+    private final int postiTotali; // final che non può cambiare
     private int postiPrenotati;
     private LocalDate data;
-    private DateTimeFormatter dataFormattata = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // formatto la data in giorno
+    private static final DateTimeFormatter dataFormattata = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // formatto la data in giorno
                                                                                           // mese e anno con il pattern
                                                                                           // nostro..
 
-    // validatori del mio evento
+    // validatori del mio evento statici
 
-    public static boolean isTitoloEventoValido(String titoloEvento) {
+    public static boolean isTitoloEventoValido(String titoloEvento) { // verifica che il titolo non sia vuoto o null
         return titoloEvento != null && !titoloEvento.isBlank();
     }
 
@@ -106,14 +106,11 @@ public class Evento {
 
     }
 
-    public DateTimeFormatter getDataFormattata() {
-        return this.dataFormattata;
+    public static DateTimeFormatter getDataFormattata() {
+        return dataFormattata;
     }
 
-    public void setDataFormattata(DateTimeFormatter dataFormattata) {
-        this.dataFormattata = dataFormattata;
-    }
-
+   
     private boolean isEventoPassato() { // verifica se l'evento è gia passato o no
         LocalDate giornoSeguente = LocalDate.now(); // data
         return giornoSeguente.isAfter(this.data);
@@ -121,6 +118,11 @@ public class Evento {
 
     // metodi
 
+  /* private static final DateTimeFormatter newDataFormattata = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public static DateTimeFormatter getNEwDataFormattata() {
+        return newDataFormattata;
+    }
+ */ 
     public void prenotaPosto() { // se soddisfa le condizioni allora si può aggiungere una prenotazione
         if (isEventoPassato()) {
             throw new RuntimeException("L'evento è già passato, non è possibile prenotare.");

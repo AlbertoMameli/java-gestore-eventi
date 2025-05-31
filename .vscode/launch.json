@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TestAll",
+            "request": "launch",
+            "mainClass": "org.lessons.java.milestone.eventi.TestAll",
+            "projectName": "java-gestore-eventi_a49233dc"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "org.lessons.java.milestone.eventi.Main",
