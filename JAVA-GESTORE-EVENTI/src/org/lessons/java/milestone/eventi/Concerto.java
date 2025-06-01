@@ -18,15 +18,23 @@ public class Concerto extends Evento {
 
     public Concerto(String titoloEvento, LocalDate data, int postiTotali, LocalTime oraConcerto, BigDecimal prezzoConcerto) {
         super(titoloEvento, data, postiTotali);
-        this.oraConcerto = oraConcerto;
-        this.prezzoConcerto = prezzoConcerto;
+       setOraConcerto(oraConcerto);
+       setPrezzo(prezzoConcerto);
     }
 
     public LocalTime getOraConcerto() {
+         
         return oraConcerto;
     }
 
     public void setOraConcerto(LocalTime oraConcerto) { 
+         if (getData().isBefore(LocalDate.now())) {
+            throw new RuntimeException("Errore: Non è possibile modificare l'ora di un concerto già passato.");
+        }
+        
+        if (oraConcerto == null) {
+            throw new RuntimeException("Errore: L'ora del concerto non può essere nulla.");
+        }
         this.oraConcerto = oraConcerto;
     }
 
@@ -35,8 +43,19 @@ public class Concerto extends Evento {
     }
 
     public void setPrezzo(BigDecimal prezzoConcerto) {
-        this.prezzoConcerto = prezzoConcerto;
+        if (prezzoConcerto == null) {
+            throw new RuntimeException("Errore: Il prezzo del concerto non può essere nullo.");
+        
     }
+    // 'compareTo(BigDecimal.ZERO)' restituisce:
+        //    < 0 se questo BigDecimal è minore di BigDecimal.ZERO
+        //    == 0 se questo BigDecimal è uguale a BigDecimal.ZERO
+        //    > 0 se questo BigDecimal è maggiore di BigDecimal.ZERO
+    if (prezzoConcerto.compareTo(BigDecimal.ZERO) < 0) {
+            throw new RuntimeException("Errore: Il prezzo del concerto non può essere negativo.");
+        }
+    this.prezzoConcerto = prezzoConcerto;
+}
 
     // Data e ora formattata
     public String getDataOraFormattata() {

@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TestUser",
+            "request": "launch",
+            "mainClass": "org.lessons.java.milestone.eventi.Tester.TestUser",
+            "projectName": "java-gestore-eventi_a49233dc"
+        },
+        {
+            "type": "java",
+            "name": "TestAll",
+            "request": "launch",
+            "mainClass": "org.lessons.java.milestone.eventi.Tester.TestAll",
+            "projectName": "java-gestore-eventi_a49233dc"
+        },
+        {
+            "type": "java",
             "name": "Testing",
             "request": "launch",
             "mainClass": "org.lessons.java.milestone.eventi.Tester.Testing",

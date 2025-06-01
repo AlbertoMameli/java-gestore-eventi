@@ -16,24 +16,28 @@ public class Main {
             String titolo = scanner.nextLine();
 
             LocalDate data = null;
+
+            //inizio il mio ciclo cosi mi assicuro che la data sia valida 
             while (data == null) {
                 System.out.println("Inserisci la data (gg/mm/yyyy):");
                 try {
-                    data = LocalDate.parse(scanner.nextLine(), formatter);
-                    if (data.isBefore(LocalDate.now())) {
+                    data = LocalDate.parse(scanner.nextLine(), formatter); //formato la stringa in data
+                    if (data.isBefore(LocalDate.now())) { //controlla se la data è nel passato
                         System.out.println("La data non può essere nel passato.");
-                        data = null;
+                        data = null;  //ritorna null per ripetere il mio input
                     }
-                } catch (DateTimeParseException e) {
+                } catch (DateTimeParseException e) { // lancia ecezione se il formato data non è nel formato previsto
                     System.out.println("Formato data non valido. Riprova.");
                 }
             }
 
             int postiTotali = 0;
+
+            //ciclo per verificare che i posti siano 0+
             while (postiTotali <= 0) {
                 System.out.println("Inserisci il numero di posti totali (positivo):");
                 try {
-                    postiTotali = Integer.parseInt(scanner.nextLine());
+                    postiTotali = Integer.parseInt(scanner.nextLine());  //trasforma la stringa in un intero
                     if (postiTotali <= 0) {
                         System.out.println("Il numero deve essere maggiore di 0.");
                     }
@@ -42,14 +46,21 @@ public class Main {
                 }
             }
 
-            Evento evento = new Evento(titolo, data, postiTotali);
-            System.out.println(evento.getInfoEvento());
+            //creazione oggetto
 
-            gestisciPrenotazioni(evento, scanner);
+            Evento evento = new Evento(titolo, data, postiTotali);
+            System.out.println(evento.getInfoEvento()); 
+
+            //chiamo i metodi di gestione e sto dicendo..
+            //ehi java, per eseguire quessti metodi prendi gli oggetti evento e scanner
+
+            gestisciPrenotazioni(evento, scanner); 
             gestisciDisdette(evento, scanner);
 
             System.out.println("Ecco le info : " + evento.getInfoEvento());
             System.out.println(evento.toString());
+
+            //nel caso in cui dovesse verificarsi un errore imprevisto lancio questo messaggio
 
         } catch (Exception e) {
             System.out.println("Errore imprevisto: " + e.getMessage());
@@ -62,15 +73,19 @@ public class Main {
         System.out.println("Vuoi prenotare dei posti? (si/no)");
         String risposta = scanner.nextLine();
 
-        if (risposta.equalsIgnoreCase("si")) {
+        if (risposta.equalsIgnoreCase("si")) { 
             int postiDisponibili = evento.getPostiTotali() - evento.getPostiPrenotati();
+
+            //creo variabile per immaganizzare i numeri di posti
             int numPosti = 0;
 
-            while (true) {
+            while (true) { 
                 System.out.println("Posti disponibili: " + postiDisponibili);
                 System.out.println("Quanti posti vuoi prenotare?");
                 try {
                     numPosti = Integer.parseInt(scanner.nextLine());
+
+                    // condizione di validazione dell input
                     if (numPosti <= 0) {
                         System.out.println("Inserisci un numero positivo.");
                     } else if (numPosti > postiDisponibili) {
@@ -83,9 +98,11 @@ public class Main {
                 }
             }
 
+            //ora con il ciclo for eseguo le prenotazione 
+
             for (int i = 0; i < numPosti; i++) {
                 try {
-                    evento.prenotaPosto();
+                    evento.prenotaPosto(); // evoco il metodo prenotaposto per incrementare i posti prenotati e verifica eventuali condizioni
                 } catch (RuntimeException e) {
                     System.out.println("Errore prenotazione: " + e.getMessage());
                     break;
@@ -101,14 +118,19 @@ public class Main {
         String risposta = scanner.nextLine();
 
         if (risposta.equalsIgnoreCase("si")) {
-            int maxDisdette = evento.getPostiPrenotati();
+            int maxDisdette = evento.getPostiPrenotati(); //numero max disdette = numero posti prenotati
+            //variabile per immagazzinare il numero di posti da disdire 
             int numPosti = 0;
+
+            //ciclo finche ottengo un numero valido per le disdette
 
             while (true) {
                 System.out.println("Posti prenotati attuali: " + maxDisdette);
                 System.out.println("Quanti posti vuoi disdire?");
                 try {
                     numPosti = Integer.parseInt(scanner.nextLine());
+
+                    //controlli 
                     if (numPosti <= 0) {
                         System.out.println("Inserisci un numero positivo.");
                     } else if (numPosti > maxDisdette) {
@@ -121,8 +143,13 @@ public class Main {
                 }
             }
 
+            //ciclo le disdette una per una
+
             for (int i = 0; i < numPosti; i++) {
                 try {
+                     // Chiama il metodo 'disdiciPrenotazione()' dell'oggetto Evento
+                // Questo metodo all'interno della classe Evento si occuperà di diminuire i posti prenotati
+                // e di verificare eventuali condizioni erratte...
                     evento.disdiciPrenotazione();
                 } catch (RuntimeException e) {
                     System.out.println("Errore disdetta: " + e.getMessage());
