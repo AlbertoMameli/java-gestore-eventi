@@ -109,7 +109,7 @@ public class Main {
                 }
             }
 
-            System.out.println("Prenotazioni effettuate. Posti prenotati: " + evento.getPostiPrenotati());
+            System.out.println("Prenotazioni effettuate. Posti prenotati: " + evento.getPostiPrenotati() + "/" +  postiDisponibili);
         }
     }
 
