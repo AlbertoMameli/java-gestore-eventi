@@ -81,16 +81,15 @@ public class TestUser {
                     eventoCorrente = new Evento(titoloEvento, data, postiTotali);
                 }
 
-                // Aggiungi l'evento al programma dopo che è stato creato con successo
-                programma.aggiungiEvento(eventoCorrente);
-                System.out.println("Evento aggiunto con successo!");
+               
 
                 // --- Richiesta di prenotazione posti ---
                 boolean prenotazioniComplete = false;
+               int postiDaPrenotare = 0;
                 while (!prenotazioniComplete) {
                     try {
-                        System.out.println("Quanti posti vuoi prenotare per questo evento? (0 per saltare)");
-                        int postiDaPrenotare = Integer.parseInt(scanner.nextLine());
+                        System.out.println("Quanti posti vuoi prenotare per questo evento?");
+                        postiDaPrenotare = Integer.parseInt(scanner.nextLine());
 
                         if (postiDaPrenotare > 0) {
                             for (int x = 0; x < postiDaPrenotare; x++) {
@@ -111,12 +110,11 @@ public class TestUser {
                         // o di procedere con l'evento senza prenotazione.
                         System.out.println("Prova a prenotare un numero diverso di posti, o 0 per non prenotare.");
                     }
-                    // Se hai una checked exception come ExceptionPostiInsufficienti, catturala qui
-                    // catch (ExceptionPostiInsufficienti e) {
-                    //     System.err.println("Errore: " + e.getMessage());
-                    //     System.out.println("Prova a prenotare un numero diverso di posti.");
-                    // }
-                }
+                    System.out.println("Hai prenotato " + postiDaPrenotare + "|" + postiTotali );                
+                } 
+                // Aggiungi l'evento al programma dopo che è stato creato con successo
+                programma.aggiungiEvento(eventoCorrente);
+                System.out.println("Evento aggiunto con successo!");
 
             } catch (NumberFormatException e) {
                 System.out.println("Errore di formato. Assicurati di inserire numeri per posti, ora o prezzo.");

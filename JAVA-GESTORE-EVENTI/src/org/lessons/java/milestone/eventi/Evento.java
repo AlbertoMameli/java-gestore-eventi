@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Evento {
-    // Variabili di istanza
+    // Variabili di istanza privati, in modo tale da non far accedere dirattamente, ma in lettura con i getter e in scrittura con i setter..
     private String titoloEvento;
     private final int POSTI_TOTALI; // final che non può cambiare una volta assegnato nel costruttore
     private int postiPrenotati;
@@ -16,8 +16,10 @@ public class Evento {
                                                                                                         // pattern
                                                                                                         // nostro..
 
-    // costruttore
+    // costruttore.. prendiamo le nostre variabili e le passiamo al nostro costruttore in modo da instaziare il nostro oggetto
     public Evento(String titoloEvento, LocalDate data, int POSTI_TOTALI) {
+
+        // metto delle condizioni per costrire il mio oggetto, in modo tale da crerare dei controlli utili per lanciare poi delle eccezioni 
         if (isTitoloEventoValido(titoloEvento)) {
             this.titoloEvento = titoloEvento;
         } else {
