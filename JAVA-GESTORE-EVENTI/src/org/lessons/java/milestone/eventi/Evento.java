@@ -14,12 +14,11 @@ public class Evento {
                                                                                                         // giorno mese e
                                                                                                         // anno con il
                                                                                                         // pattern
-                                                                                                        // nostro..
 
     // costruttore.. prendiamo le nostre variabili e le passiamo al nostro costruttore in modo da instaziare il nostro oggetto
     public Evento(String titoloEvento, LocalDate data, int POSTI_TOTALI) {
 
-        // metto delle condizioni per costrire il mio oggetto, in modo tale da crerare dei controlli utili per lanciare poi delle eccezioni 
+        // metto delle condizioni per costruire il mio oggetto, in modo tale da crerare dei controlli utili per lanciare poi delle eccezioni e avvisare l'utente
         if (isTitoloEventoValido(titoloEvento)) {
             this.titoloEvento = titoloEvento;
         } else {
@@ -88,7 +87,7 @@ public class Evento {
         return this.postiPrenotati;
     }
 
-    public void setPostiPrenotati(int postiPrenotati) {
+    public void setPostiPrenotati(int postiPrenotati) { // qui controllo i posti prenotati che non possono essere minori di 0 o maggiori dei posti totali
         if (postiPrenotati <= POSTI_TOTALI && postiPrenotati >= 0) {
             this.postiPrenotati = postiPrenotati;
         } else {

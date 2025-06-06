@@ -72,11 +72,13 @@ public class ProgrammaEventi {
     }
 
     public String stampaEventiPerData() {
-        // Utilizza le API Stream per un'elaborazione concisa:
+        // Utilizza le API Stream per un'elaborazione concisa: (leggibile, più sintetizzato il codice)
         return titolo + "\n" // Inizia con il titolo del programma
-                + eventi.stream() //prende la lista eventi e la trasdforma in uno strem
+                + eventi.stream() //prende la lista eventi e la trasforma in uno strem, ma non esegue nulla, sta solo preparando a ciò che verrà
                         .sorted(Comparator.comparing(Evento::getData))// Ordina gli eventi in base alla loro data 
                         .map(Evento::toString)// Trasforma ogni oggetto Evento in una "stringa"
+                        //ora dopo aver eseguito le operazioni intermedie abbiamo bisogno di un operazione "terminale", cioè trasformiamo il nostro strem 
+                       // in ciò che gli abbamo chiesto di trasormarsi 
                         .collect(Collectors.joining("\n")); // Unisce tutte le stringhe degli eventi in un'unica stringa e qui che avvengono le esecuzioni delle operazioni precedemti
     }
-}
+}   
