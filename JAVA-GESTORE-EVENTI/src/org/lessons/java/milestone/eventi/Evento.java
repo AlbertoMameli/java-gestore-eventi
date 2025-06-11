@@ -3,80 +3,72 @@ package org.lessons.java.milestone.eventi;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import org.lessons.java.milestone.eventi.Eccezioni.ExceptionNessunaPrenotazione;
+import org.lessons.java.milestone.eventi.Eccezioni.ExceptionPostiPrenotabili;
+
 public class Evento {
-    // Variabili di istanza privati, in modo tale da non far accedere dirattamente, ma in lettura con i getter e in scrittura con i setter..
+    // (caratteristiche)
+    // Variabili di istanza private
     private String titoloEvento;
-    private final int POSTI_TOTALI; // final che non può cambiare una volta assegnato nel costruttore
+    private final int POSTI_TOTALI; // final non può cambiare una volta assegnato nel costruttore
     private int postiPrenotati;
     private LocalDate data;
-    private static final DateTimeFormatter DATA_FORMATTATA = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // formatto la
-                                                                                                        // data in
-                                                                                                        // giorno mese e
-                                                                                                        // anno con il
-                                                                                                        // pattern
+    private static final DateTimeFormatter DATA_FORMATTATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    // costruttore.. prendiamo le nostre variabili e le passiamo al nostro costruttore in modo da instaziare il nostro oggetto
+    // (azioni)
+    // Costruttore che serve per inizializzare l'oggetto della classe (deve avere lo
+    // stesso nome di essa)
     public Evento(String titoloEvento, LocalDate data, int POSTI_TOTALI) {
+        // Usa i setter per inizializzare e validare
+        setTitoloEvento(titoloEvento);
+        setData(data);
 
-        // metto delle condizioni per costruire il mio oggetto, in modo tale da crerare dei controlli utili per lanciare poi delle eccezioni e avvisare l'utente
-        if (isTitoloEventoValido(titoloEvento)) {
-            this.titoloEvento = titoloEvento;
-        } else {
-            throw new RuntimeException("Inserire il titolo!");
-        }
-
-        if (isEventoValido(data)) {
-            this.data = data;
-        } else {
-            DateTimeFormatter formatta = DateTimeFormatter.ofPattern("dd/MM/YYYY"); // trasformo la stringa in un
-                                                                                    // oggetto immutabile
-            throw new RuntimeException("La data " + data.format(formatta)
-                    + " non è valida, verifica che non sia precedente alla data odierna!");
-        }
+        // POSTI_TOTALI è final, quindi deve essere impostato direttamente dopo la
+        // validazione.
+        // La sua validazione non può essere spostata in un setter poiché non esiste un
+        // setter per esso.
 
         if (isCapienzaValida(POSTI_TOTALI)) {
             this.POSTI_TOTALI = POSTI_TOTALI;
-
         } else {
-            throw new RuntimeException(
-                    "Il numero di posti " + POSTI_TOTALI + " non è valido, verificare che sia maggiore di 0.");
 
+            throw new IllegalArgumentException(
+                    "Il numero di posti " + POSTI_TOTALI + " non è valido, verificare che sia maggiore di 0.");
         }
-        // inizializzo i posti prenotati
 
         this.postiPrenotati = 0;
-
     }
-    // validatori del mio evento statici
 
-    public static boolean isTitoloEventoValido(String titoloEvento) { // verifica che il titolo non sia vuoto o null
+    // --- Validatori statici --- (cioè appartengono alla classe non al singolo
+    // oggetto)
+    public static boolean isTitoloEventoValido(String titoloEvento) {
         return titoloEvento != null && !titoloEvento.isBlank(); // .trim().isempty()
     }
 
-    public static boolean isEventoValido(LocalDate data) { // verifica se l'evento trasformato in parametro si svolge in
-                                                           // futuro
-        LocalDate giornoSeguente = LocalDate.now(); // data di oggi //
-        return !data.isBefore(giornoSeguente); // confronto con data ricevuta
+    public static boolean isEventoValido(LocalDate data) {
+        // Usa LocalDate.now() per ottenere la data odierna
+        return !data.isBefore(LocalDate.now());
     }
 
-    public static boolean isCapienzaValida(int POSTI_TOTALI) { // numeri postitotali deve essere maggiore di 0
+    public static boolean isCapienzaValida(int POSTI_TOTALI) {
         return POSTI_TOTALI > 0;
     }
 
-    // Getter e Setter
+    public static DateTimeFormatter dataFormattataNow() {
+        return DATA_FORMATTATA;
+    }
 
+    // --- Getter e Setter ---
     public String getTitoloEvento() {
         return this.titoloEvento;
     }
 
-    public void setTitoloEvento(String titoloEvento) { // controllo cosa inserisce l'utente nel
-                                                       // mentre che si esegue il codice
-        if (isTitoloEventoValido((titoloEvento))) {
+    public void setTitoloEvento(String titoloEvento) {
+        if (isTitoloEventoValido(titoloEvento)) {
             this.titoloEvento = titoloEvento;
         } else {
-            throw new RuntimeException("Inserisci il titolo");
+            throw new IllegalArgumentException("Inserire il titolo!");
         }
-
     }
 
     public int getPostiTotali() {
@@ -87,14 +79,13 @@ public class Evento {
         return this.postiPrenotati;
     }
 
-    public void setPostiPrenotati(int postiPrenotati) { // qui controllo i posti prenotati che non possono essere minori di 0 o maggiori dei posti totali
+    public void setPostiPrenotati(int postiPrenotati) {
         if (postiPrenotati <= POSTI_TOTALI && postiPrenotati >= 0) {
             this.postiPrenotati = postiPrenotati;
         } else {
-            throw new RuntimeException(
-                    "Il numero di posti deve essere minore dei posti totali e non può essere infeririore a 0.");
+            throw new IllegalArgumentException(
+                    "Il numero di posti deve essere minore dei posti totali e non può essere inferiore a 0.");
         }
-
     }
 
     public LocalDate getData() {
@@ -105,46 +96,39 @@ public class Evento {
         if (isEventoValido(data)) {
             this.data = data;
         } else {
-            throw new RuntimeException("La data " + data.format(DATA_FORMATTATA)
+            throw new IllegalArgumentException("La data " + data.format(DATA_FORMATTATA)
                     + " non è valida, verifica che non sia precedente alla data odierna!");
         }
-
     }
 
-    // metodi
+   
 
-    // ottengo la mia data formattata utilizzabile in altre classi
-    public static DateTimeFormatter getDataFormattata() {
-        return DATA_FORMATTATA;
+    private boolean isEventoPassato() {
+        // Confronta con la data odierna
+        return LocalDate.now().isAfter(this.data);
     }
+     // --- Metodi ---
 
-    private boolean isEventoPassato() { // verifica se l'evento è gia passato o no... da implementare nei metodi prenota
-                                        // e disdici
-        LocalDate giornoSeguente = LocalDate.now();
-        return giornoSeguente.isAfter(this.data);
-    }
-
-    public void prenotaPosto() { // se soddisfa le condizioni allora si può aggiungere una prenotazione
+    public void prenotaPosto()throws ExceptionPostiPrenotabili {
         if (isEventoPassato()) {
-            throw new RuntimeException("L'evento è già passato, non è possibile prenotare.");
+            // Usa IllegalStateException per operazioni non valide in base allo stato
+            // dell'oggetto
+            throw new IllegalStateException("L'evento è già passato, non è possibile prenotare.");
         }
-        if (postiPrenotati >= POSTI_TOTALI) { // verifico se ci sono disponibili
-            throw new RuntimeException("Posti esauriti, non è possibile prenotare");
+        if (this.postiPrenotati >= this.POSTI_TOTALI) {
+            throw new IllegalStateException("Posti esauriti, non è possibile prenotare");
         }
-        //incrementiamo se le condizioni sono favorevoli
-        postiPrenotati++;
+        this.postiPrenotati++;
     }
 
-    public void disdiciPrenotazione() {
+    public void disdiciPrenotazione() throws ExceptionNessunaPrenotazione{
         if (isEventoPassato()) {
-            throw new RuntimeException("L'evento è gia passato, non puoi disdire.");
+            throw new IllegalStateException("L'evento è già passato, non puoi disdire.");
         }
-        if (postiPrenotati <= 0) {
-            throw new RuntimeException("Non è possibile disdire, devi prima prenotare.");
+        if (this.postiPrenotati <= 0) {
+            throw new IllegalStateException("Non è possibile disdire, devi prima prenotare.");
         }
-        // se le condizioni sono soddisfatte, diminuiamo il numero di prenotazioni
-        postiPrenotati--;
-
+        this.postiPrenotati--;
     }
 
     public String getInfoEvento() {

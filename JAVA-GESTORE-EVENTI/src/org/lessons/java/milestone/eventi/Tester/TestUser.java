@@ -48,7 +48,7 @@ public class TestUser {
 
                 System.out.println("Data dell'evento: (dd/mm/yyyy) ");
                 String dataStr = scanner.nextLine();
-                LocalDate data = LocalDate.parse(dataStr, Evento.getDataFormattata());
+                LocalDate data = LocalDate.parse(dataStr, Evento.dataFormattataNow());
 
                 System.out.print("Posti totali disponibili: ");
                 int postiTotali = Integer.parseInt(scanner.nextLine());

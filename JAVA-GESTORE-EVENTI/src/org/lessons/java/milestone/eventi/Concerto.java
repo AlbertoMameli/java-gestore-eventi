@@ -63,7 +63,7 @@ public class Concerto extends Evento {
 
     // Data e ora formattata
     public String getDataOraFormattata() {
-        return getData().format(getDataFormattata()) + "-" + oraConcerto.format(ORARIO_FORMATTATO);
+        return getData().format(dataFormattataNow()) + "-" + oraConcerto.format(ORARIO_FORMATTATO);
     }
 
     // prezzo formattato
