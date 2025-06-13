@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import org.lessons.java.milestone.eventi.Eccezioni.ExceptionPrezzoNull;
+import org.lessons.java.milestone.eventi.Eccezioni.ExceptionOraLive;
 import org.lessons.java.milestone.eventi.Eccezioni.ExceptionPrezzoNegativo;
 
 public class Concerto extends Evento {
@@ -31,13 +32,13 @@ public class Concerto extends Evento {
         return oraConcerto;
     }
 
-    public void setOraConcerto(LocalTime oraConcerto) {
+    public void setOraConcerto(LocalTime oraConcerto) throws ExceptionOraLive {
         if (getData().isBefore(LocalDate.now())) {
-            throw new RuntimeException("Errore: Non è possibile modificare l'ora di un concerto già passato.");
+            throw new ExceptionOraLive("Errore: Non è possibile modificare l'ora di un concerto già passato.");
         }
 
         if (oraConcerto == null) {
-            throw new RuntimeException("Errore: L'ora del concerto non può essere nulla.");
+            throw new ExceptionOraLive("Errore: L'ora del concerto non può essere nulla.");
         }
         this.oraConcerto = oraConcerto;
     }

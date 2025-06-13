@@ -1,19 +1,19 @@
-package org.lessons.java.milestone.eventi; // Dichiarazione del package in cui si trova la classe
+package org.lessons.java.milestone.eventi;
 
-import java.time.LocalDate; // Importa la classe LocalDate per lavorare con le date
-import java.time.format.DateTimeFormatter; // Importa la classe DateTimeFormatter per formattare le date
-import java.time.format.DateTimeParseException; // Importa l'eccezione specifica per errori di parsing della data
-import java.util.Scanner; // Importa la classe Scanner per leggere l'input da tastiera
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Scanner;
 
-// Importa tutte le classi di eccezione personalizzate dal package Eccezioni
+// Importo tutte le classi di eccezione personalizzate 
 import org.lessons.java.milestone.eventi.Eccezioni.ExceptionDataFormat;
 import org.lessons.java.milestone.eventi.Eccezioni.ExceptionNumeroEccessivo;
 import org.lessons.java.milestone.eventi.Eccezioni.ExceptionNumeroNegativo;
 import org.lessons.java.milestone.eventi.Eccezioni.ExceptionPostiPrenotabili;
-import org.lessons.java.milestone.eventi.Eccezioni.ExceptionNessunaPrenotazione; // Nuova eccezione per disdette senza prenotazioni
-import org.lessons.java.milestone.eventi.Eccezioni.ExceptionTitoloNonValido; // Nuova eccezione per titolo non valido
+import org.lessons.java.milestone.eventi.Eccezioni.ExceptionNessunaPrenotazione;
+import org.lessons.java.milestone.eventi.Eccezioni.ExceptionTitoloNonValido;
 
-public class Main { // Dichiarazione della classe principale
+public class Main {
 
     public static void main(String[] args) { // Metodo principale, punto di ingresso dell'applicazione
         Scanner scanner = new Scanner(System.in); // Crea un oggetto Scanner per leggere l'input dell'utente
@@ -88,7 +88,13 @@ public class Main { // Dichiarazione della classe principale
 
             // Chiamata ai metodi per gestire prenotazioni e disdette
             gestisciPrenotazioni(evento, scanner); // Chiama il metodo per gestire le prenotazioni
-            gestisciDisdette(evento, scanner); // Chiama il metodo per gestire le disdette
+
+            // Chiama le disdette solo se ci sono prenotazioni
+            if (evento.getPostiPrenotati() > 0) {
+                gestisciDisdette(evento, scanner);
+            } else {
+                System.out.println("Nessuna prenotazione effettuata.");
+            }
 
             System.out.println("Ecco le info aggiornate: " + evento.getInfoEvento()); // Stampa le informazioni
                                                                                       // aggiornate dell'evento
@@ -116,17 +122,25 @@ public class Main { // Dichiarazione della classe principale
     }
 
     // Metodo per Gestire le Prenotazioni
-
     public static void gestisciPrenotazioni(Evento evento, Scanner scanner)
             throws ExceptionDataFormat, ExceptionPostiPrenotabili, ExceptionNumeroNegativo, ExceptionNumeroEccessivo {
-        System.out.println("Vuoi prenotare dei posti? (si/no)"); // Chiede all'utente se vuole prenotare
-        String risposta = scanner.nextLine(); // Legge la risposta
+        String risposta;
+        // utilizzo do-wile cosida creare un loop finche non iserisce si o no
+        do {
+            System.out.println("Vuoi prenotare dei posti? (si/no)"); // Chiede all'utente se vuole prenotare
+            risposta = scanner.nextLine().trim(); // Legge la risposta e rimuove spazi bianchi
+            if (!risposta.equalsIgnoreCase("si") && !risposta.equalsIgnoreCase("no")) {
+                System.out.println("Risposta non valida. Inserisci 'si' o 'no'.");
+            }
+        } while (!risposta.equalsIgnoreCase("si") && !risposta.equalsIgnoreCase("no"));
+        // --- FINE MODIFICA ---
 
         if (risposta.equalsIgnoreCase("si")) { // Se l'utente risponde "si"
             // Calcola i posti attualmente disponibili (posti totali meno posti già
             // prenotati)
             int postiDisponibili = evento.getPostiTotali() - evento.getPostiPrenotati();
 
+            // ... (resto del codice per le prenotazioni) ...
             int numPosti = 0; // Variabile per immagazzinare il numero di posti da prenotare
 
             // Ciclo per ottenere un numero valido di posti da prenotare
@@ -139,17 +153,17 @@ public class Main { // Dichiarazione della classe principale
                     // Controlli di validazione e lancio delle eccezioni personalizzate
                     if (numPosti <= 0) { // Se il numero è minore o uguale a zero
                         throw new ExceptionNumeroNegativo("Inserisci un numero positivo per la prenotazione."); // Lancia
-                                                                                                                // l'eccezione
+                        // l'eccezione
                     } else if (numPosti > postiDisponibili) { // Se il numero supera i posti disponibili
                         throw new ExceptionNumeroEccessivo(
                                 "Non puoi prenotare più di " + postiDisponibili + " posti disponibili."); // Lancia
-                                                                                                          // l'eccezione
+                        // l'eccezione
                     } else {
                         break; // Se l'input è valido, esce dal ciclo
                     }
                 } catch (NumberFormatException e) { // Cattura l'eccezione se l'input non è un numero
                     System.out.println("Input non valido. Inserisci un numero intero."); // Stampa un messaggio di
-                                                                                         // errore
+                    // errore
                 } catch (ExceptionNumeroNegativo e) { // Cattura l'eccezione per numero negativo
                     System.out.println(e.getMessage()); // Stampa il messaggio dell'eccezione
                 } catch (ExceptionNumeroEccessivo e) { // Cattura l'eccezione per numero eccessivo
@@ -164,31 +178,41 @@ public class Main { // Dichiarazione della classe principale
                 } catch (ExceptionPostiPrenotabili e) { // Cattura l'eccezione se non ci sono più posti prenotabili
                     System.out.println("Errore prenotazione: " + e.getMessage()); // Stampa il messaggio d'errore
                     break; // Interrompe il ciclo di prenotazioni se un errore si verifica (es. evento
-                           // pieno)
+                    // pieno)
                 } catch (Exception e) { // Cattura qualsiasi altra eccezione generica
                     System.out.println("Errore imprevisto durante la prenotazione: " + e.getMessage()); // Stampa un
-                                                                                                        // messaggio di
-                                                                                                        // errore
-                                                                                                        // generico
+                    // messaggio di
+                    // errore
+                    // generico
                     break; // Interrompe il ciclo in caso di errore imprevisto
                 }
             }
             // Stampa lo stato aggiornato delle prenotazioni
-            System.out.println("Prenotazioni elaborate. Posti prenotati: " + evento.getPostiPrenotati()
+            System.out.println("Posti prenotati: " + evento.getPostiPrenotati()
                     + ". Posti disponibili rimanenti: " + (evento.getPostiTotali() - evento.getPostiPrenotati()));
         }
     }
 
     // Metodo per Gestire le Disdette
 
+    // Metodo per Gestire le Disdette
     public static void gestisciDisdette(Evento evento, Scanner scanner)
             throws ExceptionPostiPrenotabili, ExceptionDataFormat, ExceptionNumeroNegativo, ExceptionNumeroEccessivo,
             ExceptionNessunaPrenotazione {
-        System.out.println("Vuoi disdire delle prenotazioni? (si/no)"); // Chiede all'utente se vuole disdire
-        String risposta = scanner.nextLine(); // Legge la risposta
+        String risposta;
+
+        do {
+            System.out.println("Vuoi disdire delle prenotazioni? (si/no)"); // Chiede all'utente se vuole disdire
+            risposta = scanner.nextLine().trim(); // Legge la risposta e rimuove spazi bianchi
+            if (!risposta.equalsIgnoreCase("si") && !risposta.equalsIgnoreCase("no")) {
+                System.out.println("Risposta non valida. Inserisci 'si' o 'no'.");
+            }
+        } while (!risposta.equalsIgnoreCase("si") && !risposta.equalsIgnoreCase("no"));
+        // --- FINE MODIFICA ---
 
         if (risposta.equalsIgnoreCase("si")) { // Se l'utente risponde "si"
             int maxDisdette = evento.getPostiPrenotati(); // Il numero massimo di disdette è pari ai posti già prenotati
+            // ... (resto del codice per le disdette) ...
             int numPosti = 0; // Variabile per immagazzinare il numero di posti da disdire
 
             // Ciclo per ottenere un numero valido per le disdette
@@ -201,17 +225,17 @@ public class Main { // Dichiarazione della classe principale
                     // Controlli di validazione e lancio delle eccezioni personalizzate
                     if (numPosti <= 0) { // Se il numero è minore o uguale a zero
                         throw new ExceptionNumeroNegativo("Inserisci un numero positivo per le disdette."); // Lancia
-                                                                                                            // l'eccezione
+                        // l'eccezione
                     } else if (numPosti > maxDisdette) { // Se il numero supera i posti prenotati attuali
                         throw new ExceptionNumeroEccessivo(
                                 "Non puoi disdire più di " + maxDisdette + " posti già prenotati."); // Lancia
-                                                                                                     // l'eccezione
+                        // l'eccezione
                     } else {
                         break; // Se l'input è valido, esce dal ciclo
                     }
                 } catch (NumberFormatException e) { // Cattura l'eccezione se l'input non è un numero
                     System.out.println("Input non valido. Inserisci un numero intero."); // Stampa un messaggio di
-                                                                                         // errore
+                    // errore
                 } catch (ExceptionNumeroNegativo e) { // Cattura l'eccezione per numero negativo
                     System.out.println(e.getMessage()); // Stampa il messaggio dell'eccezione
                 } catch (ExceptionNumeroEccessivo e) { // Cattura l'eccezione per numero eccessivo
@@ -227,13 +251,13 @@ public class Main { // Dichiarazione della classe principale
                     // e lanciare un'eccezione se non ci sono posti da disdire
                     evento.disdiciPrenotazione();
                 } catch (ExceptionNessunaPrenotazione e) { // Cattura la nuova eccezione se non ci sono prenotazioni da
-                                                           // disdire
+                    // disdire
                     System.out.println("Errore disdetta: " + e.getMessage()); // Stampa il messaggio d'errore
                     break; // Interrompe il ciclo di disdette se un errore si verifica
                 } catch (Exception e) { // Cattura qualsiasi altra eccezione generica
                     System.out.println("Errore imprevisto durante la disdetta: " + e.getMessage()); // Stampa un
-                                                                                                    // messaggio di
-                                                                                                    // errore generico
+                    // messaggio di
+                    // errore generico
                     break; // Interrompe il ciclo in caso di errore imprevisto
                 }
             }

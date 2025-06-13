@@ -4,13 +4,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import org.lessons.java.milestone.eventi.Eccezioni.ExceptionNessunaPrenotazione;
+import org.lessons.java.milestone.eventi.Eccezioni.ExceptionNumeroNegativo;
 import org.lessons.java.milestone.eventi.Eccezioni.ExceptionPostiPrenotabili;
+import org.lessons.java.milestone.eventi.Eccezioni.ExceptionTitoloNonValido;
 
 public class Evento {
     // (caratteristiche)
     // Variabili di istanza private
     private String titoloEvento;
-    private final int POSTI_TOTALI; // final non può cambiare una volta assegnato nel costruttore
+    private final int POSTI_TOTALI;
     private int postiPrenotati;
     private LocalDate data;
     private static final DateTimeFormatter DATA_FORMATTATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -18,7 +20,8 @@ public class Evento {
     // (azioni)
     // Costruttore che serve per inizializzare l'oggetto della classe (deve avere lo
     // stesso nome di essa)
-    public Evento(String titoloEvento, LocalDate data, int POSTI_TOTALI) {
+    public Evento(String titoloEvento, LocalDate data, int POSTI_TOTALI)
+            throws ExceptionNumeroNegativo, ExceptionTitoloNonValido {
         // Usa i setter per inizializzare e validare
         setTitoloEvento(titoloEvento);
         setData(data);
@@ -32,7 +35,7 @@ public class Evento {
             this.POSTI_TOTALI = POSTI_TOTALI;
         } else {
 
-            throw new IllegalArgumentException(
+            throw new ExceptionNumeroNegativo(
                     "Il numero di posti " + POSTI_TOTALI + " non è valido, verificare che sia maggiore di 0.");
         }
 
@@ -63,11 +66,11 @@ public class Evento {
         return this.titoloEvento;
     }
 
-    public void setTitoloEvento(String titoloEvento) {
+    public void setTitoloEvento(String titoloEvento) throws ExceptionTitoloNonValido {
         if (isTitoloEventoValido(titoloEvento)) {
             this.titoloEvento = titoloEvento;
         } else {
-            throw new IllegalArgumentException("Inserire il titolo!");
+            throw new ExceptionTitoloNonValido("Inserire il titolo!");
         }
     }
 
@@ -79,11 +82,11 @@ public class Evento {
         return this.postiPrenotati;
     }
 
-    public void setPostiPrenotati(int postiPrenotati) {
+    public void setPostiPrenotati(int postiPrenotati) throws ExceptionPostiPrenotabili {
         if (postiPrenotati <= POSTI_TOTALI && postiPrenotati >= 0) {
             this.postiPrenotati = postiPrenotati;
         } else {
-            throw new IllegalArgumentException(
+            throw new ExceptionPostiPrenotabili(
                     "Il numero di posti deve essere minore dei posti totali e non può essere inferiore a 0.");
         }
     }
@@ -101,15 +104,13 @@ public class Evento {
         }
     }
 
-   
-
     private boolean isEventoPassato() {
         // Confronta con la data odierna
         return LocalDate.now().isAfter(this.data);
     }
-     // --- Metodi ---
+    // --- Metodi ---
 
-    public void prenotaPosto()throws ExceptionPostiPrenotabili {
+    public void prenotaPosto() throws ExceptionPostiPrenotabili {
         if (isEventoPassato()) {
             // Usa IllegalStateException per operazioni non valide in base allo stato
             // dell'oggetto
@@ -121,7 +122,7 @@ public class Evento {
         this.postiPrenotati++;
     }
 
-    public void disdiciPrenotazione() throws ExceptionNessunaPrenotazione{
+    public void disdiciPrenotazione() throws ExceptionNessunaPrenotazione {
         if (isEventoPassato()) {
             throw new IllegalStateException("L'evento è già passato, non puoi disdire.");
         }
