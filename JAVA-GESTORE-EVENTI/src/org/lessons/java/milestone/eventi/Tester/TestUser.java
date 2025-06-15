@@ -12,13 +12,13 @@ import org.lessons.java.milestone.eventi.Eccezioni.*;
 public class TestUser {
     private static final Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExceptionDataPassata{
         System.out.println("-------Creiamo un programma eventi!!!------------");
 
         ProgrammaEventi programma = creaProgramma();
         int numeroEventi = richiediNumeroEventi();
 
-        for (int i = 0; i < numeroEventi; i++) {
+        for (int i = 0; i < numeroEventi; i++){
             System.out.println("\n--- Evento " + (i + 1) + " ---");
             Evento evento = creaEvento();
             gestisciPrenotazioni(evento);
@@ -118,7 +118,7 @@ public class TestUser {
         }
     }
 
-    private static void gestisciPrenotazioni(Evento evento) {
+    private static void gestisciPrenotazioni(Evento evento)throws ExceptionDataPassata {
         while (true) {
             try {
                 System.out.println("Quanti posti vuoi prenotare per questo evento? ");
@@ -144,7 +144,7 @@ public class TestUser {
         }
     }
 
-    private static void gestisciDisdette(Evento evento) {
+    private static void gestisciDisdette(Evento evento) throws ExceptionDataPassata {
         if (evento.getPostiPrenotati() == 0)
             return;
 
