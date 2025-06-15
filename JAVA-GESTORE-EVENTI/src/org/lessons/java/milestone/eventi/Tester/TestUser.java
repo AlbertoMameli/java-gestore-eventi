@@ -6,134 +6,181 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-import org.lessons.java.milestone.eventi.Concerto;
-import org.lessons.java.milestone.eventi.Evento;
-import org.lessons.java.milestone.eventi.ProgrammaEventi;
+import org.lessons.java.milestone.eventi.*;
 import org.lessons.java.milestone.eventi.Eccezioni.*;
 
-
 public class TestUser {
+    private static final Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         System.out.println("-------Creiamo un programma eventi!!!------------");
 
-        System.out.println("Inserisci il titolo del tuo programma di eventi!");
-        String nomeProgramma = scanner.nextLine();
+        ProgrammaEventi programma = creaProgramma();
+        int numeroEventi = richiediNumeroEventi();
 
-        ProgrammaEventi programma = new ProgrammaEventi(nomeProgramma);
-
-        int numeroEventi = 0;
-        boolean inputValido = false;
-        while (!inputValido) {
-            try {
-                System.out.println("Quanti eventi vuoi inserire?");
-                numeroEventi = Integer.parseInt(scanner.nextLine());
-                inputValido = true;
-            } catch (NumberFormatException e) {
-                System.out.println("Input non valido. Inserisci un numero intero per il numero di eventi.");
-            }
-        }
-
-
-        // ciclo for per chiedere più volte all'utente di inserire eventi
         for (int i = 0; i < numeroEventi; i++) {
-            System.out.println("\n--- Inserisci i dati per l'evento: " + (i + 1) + " ---");
-
-            try {
-                System.out.println("E' un concerto? (si/no)");
-                String rispostaTipologia = scanner.nextLine().trim().toLowerCase(); // Normalizza l'input
-
-                System.out.println("Titolo evento: ");
-                String titoloEvento = scanner.nextLine();
-
-                System.out.println("Data dell'evento: (dd/mm/yyyy) ");
-                String dataStr = scanner.nextLine();
-                LocalDate data = LocalDate.parse(dataStr, Evento.dataFormattataNow());
-
-                System.out.print("Posti totali disponibili: ");
-                int postiTotali = Integer.parseInt(scanner.nextLine());
-
-                Evento eventoCorrente; // Variabile per l'evento creato
-
-                if (rispostaTipologia.equals("si")) {
-                    System.out.println("Ora del concerto: (hh:mm)"); // Corretto il formato
-                    String oraStr = scanner.nextLine();
-                    LocalTime oraConcerto = LocalTime.parse(oraStr, DateTimeFormatter.ofPattern("HH:mm"));
-
-                    BigDecimal prezzoTicketConcerto = null;
-                    boolean prezzoValido = false;
-                    while(!prezzoValido) {
-                        try {
-                            System.out.println("Inserisci il prezzo del biglietto: (es. 29.99)");
-                            // Sostituisce la virgola con il punto per BigDecimal
-                            prezzoTicketConcerto = new BigDecimal(scanner.nextLine().replace(',', '.'));
-                            prezzoValido = true;
-                        } catch (NumberFormatException e) {
-                            System.out.println("Formato prezzo non valido. Usa il formato ##.##");
-                        }
-                    }
-
-                    // Il costruttore di Concerto lancia eccezioni controllate per il prezzo
-                    eventoCorrente = new Concerto(titoloEvento, data, postiTotali, oraConcerto, prezzoTicketConcerto);
-
-                } else {
-                    // Il costruttore di Evento potrebbe lanciare eccezioni (es. data passata)
-                    eventoCorrente = new Evento(titoloEvento, data, postiTotali);
-                }
-
-               
-
-                // --- Richiesta di prenotazione posti ---
-                boolean prenotazioniComplete = false;
-               int postiDaPrenotare = 0;
-                while (!prenotazioniComplete) {
-                    try {
-                        System.out.println("Quanti posti vuoi prenotare per questo evento?");
-                        postiDaPrenotare = Integer.parseInt(scanner.nextLine());
-
-                        if (postiDaPrenotare > 0) {
-                            for (int x = 0; x < postiDaPrenotare; x++) {
-                                // Questo metodo dovrebbe gestire la logica di prenotazione e lanciare eccezioni
-                                // se i posti non sono disponibili o l'evento è passato.
-                                eventoCorrente.prenotaPosto();
-                            }
-                            System.out.println("Prenotati " + postiDaPrenotare + " posti.");
-                        } else if (postiDaPrenotare == 0) {
-                            System.out.println("Nessun posto prenotato per questo evento.");
-                        }
-                        prenotazioniComplete = true; // Usciamo dal ciclo di prenotazione se l'input è valido o 0
-                    } catch (NumberFormatException e) {
-                        System.out.println("Input non valido. Inserisci un numero intero per i posti da prenotare.");
-                    } catch (RuntimeException e) { // Questo dovrebbe catturare eccezioni da prenotaPosto (es. posti esauriti, evento passato)
-                        System.err.println("Errore durante la prenotazione: " + e.getMessage());
-                        // Non incrementiamo i per far reinserire l'evento, ma permettiamo di riprovare a prenotare
-                        // o di procedere con l'evento senza prenotazione.
-                        System.out.println("Prova a prenotare un numero diverso di posti, o 0 per non prenotare.");
-                    }
-                    System.out.println("Hai prenotato " + postiDaPrenotare + "|" + postiTotali );                
-                } 
-                // Aggiungi l'evento al programma dopo che è stato creato con successo
-                programma.aggiungiEvento(eventoCorrente);
-                System.out.println("Evento aggiunto con successo!");
-
-            } catch (NumberFormatException e) {
-                System.out.println("Errore di formato. Assicurati di inserire numeri per posti, ora o prezzo.");
-                i--; // Torna indietro nel ciclo per far reinserire l'evento corrente
-                System.out.println("Inserisci nuovamente l'evento.");
-            } catch (ExceptionPrezzoNull | ExceptionPrezzoNegativo e) { // Cattura le tue eccezioni di prezzo specifiche
-                System.out.println("Errore relativo al prezzo: " + e.getMessage());
-                i--; // Torna indietro nel ciclo
-                System.out.println("Inserisci nuovamente l'evento.");
-            } catch (Exception e) { // Cattura altre eccezioni dal costruttore o da Evento (es. data passata)
-                System.out.println("Errore nella creazione dell'evento: " + e.getMessage());
-                i--; // Torna indietro nel ciclo
-                System.out.println("Inserisci nuovamente l'evento.");
-            }
+            System.out.println("\n--- Evento " + (i + 1) + " ---");
+            Evento evento = creaEvento();
+            gestisciPrenotazioni(evento);
+            gestisciDisdette(evento);
+            programma.aggiungiEvento(evento);
         }
 
-        System.out.println("\n--- Riepilogo Programma Eventi ---");
+        System.out.println("--- Riepilogo Programma Eventi ---");
         System.out.println(programma.stampaEventiPerData());
 
+        for (Evento evento : programma.getEventi()) {
+            System.out.println(evento.getInfoEvento());
+        }
+
         scanner.close();
+    }
+
+    private static ProgrammaEventi creaProgramma() {
+        while (true) {
+            System.out.println("Inserisci il titolo del tuo programma di eventi: ");
+            String titolo = scanner.nextLine().trim();
+            try {
+                return new ProgrammaEventi(titolo);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Errore: " + e.getMessage());
+            }
+        }
+    }
+
+    private static int richiediNumeroEventi() {
+        while (true) {
+            try {
+                System.out.println("Quanti eventi vuoi inserire? ");
+                int numero = Integer.parseInt(scanner.nextLine());
+                if (numero <= 0)
+                    throw new ExceptionNumeroNegativo("Il numero di eventi deve essere positivo.");
+                return numero;
+            } catch (NumberFormatException e) {
+                System.out.println("Errore: inserisci un numero intero valido per il numero di eventi.");
+            } catch (ExceptionNumeroNegativo e) {
+                System.out.println("Errore: " + e.getMessage());
+            }
+        }
+    }
+
+    private static Evento creaEvento() {
+        while (true) {
+            try {
+                System.out.println("È un concerto? (si/no): ");
+                String tipo = scanner.nextLine().trim().toLowerCase();
+                if (!tipo.equals("si") && !tipo.equals("no")) {
+                    throw new ExceptionRispostaNonValida(
+                            "Errore nel fornire un informazione utile alla creazione dell'evento");
+                }
+
+                System.out.println("Titolo evento: ");
+                String titolo = scanner.nextLine().trim();
+                if (!Evento.isTitoloEventoValido(titolo)) {
+                    throw new ExceptionTitoloNonValido("Titolo non valido.");
+                }
+
+                System.out.println("Data evento (dd/mm/yyyy): ");
+                LocalDate data = LocalDate.parse(scanner.nextLine(), Evento.dataFormattataNow());
+                if (!Evento.isEventoValido(data)) {
+                    throw new ExceptionDataFormat("La data dell'evento non può essere nel passato.");
+                }
+
+                System.out.println("Posti totali: ");
+                int postiTotali = Integer.parseInt(scanner.nextLine());
+                if (postiTotali <= 0) {
+                    throw new ExceptionNumeroNegativo("Il numero di posti deve essere positivo.");
+                }
+
+                if (tipo.equals("si")) {
+                    System.out.println("Ora concerto (HH:mm): ");
+                    LocalTime ora = LocalTime.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("HH:mm"));
+
+                    System.out.println("Prezzo biglietto: ");
+                    BigDecimal prezzo = new BigDecimal(scanner.nextLine().replace(",", "."));
+                    if (prezzo.compareTo(BigDecimal.ZERO) < 0) {
+                        throw new ExceptionPrezzoNegativo("Il prezzo non può essere negativo.");
+                    }
+
+                    return new Concerto(titolo, data, postiTotali, ora, prezzo);
+                } else {
+                    return new Evento(titolo, data, postiTotali);
+                }
+
+            } catch (ExceptionTitoloNonValido | ExceptionDataFormat | ExceptionNumeroNegativo | ExceptionPrezzoNull
+                    | ExceptionPrezzoNegativo | ExceptionOraLive e) {
+                System.out.println("Errore: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                System.out.println("Errore: formato numerico non valido. Inserisci un numero corretto.");
+            } catch (Exception e) {
+                System.out.println("Errore imprevisto: " + e.getMessage());
+            }
+        }
+    }
+
+    private static void gestisciPrenotazioni(Evento evento) {
+        while (true) {
+            try {
+                System.out.println("Quanti posti vuoi prenotare per questo evento? ");
+                int posti = Integer.parseInt(scanner.nextLine());
+
+                if (posti <= 0)
+                    throw new ExceptionNumeroNegativo("Inserisci un numero positivo di posti.");
+                if (posti > (evento.getPostiTotali() - evento.getPostiPrenotati())) {
+                    throw new ExceptionNumeroEccessivo("Posti richiesti superiori alla disponibilità.");
+                }
+
+                for (int i = 0; i < posti; i++) {
+                    evento.prenotaPosto();
+                }
+                System.out.println("Prenotazione completata. Posti prenotati: " + evento.getPostiPrenotati());
+                return;
+
+            } catch (NumberFormatException e) {
+                System.out.println("Errore: inserisci un numero intero valido.");
+            } catch (ExceptionNumeroNegativo | ExceptionNumeroEccessivo | ExceptionPostiPrenotabili e) {
+                System.out.println("Errore: " + e.getMessage());
+            }
+        }
+    }
+
+    private static void gestisciDisdette(Evento evento) {
+        if (evento.getPostiPrenotati() == 0)
+            return;
+
+        while (true) { 
+            System.out.println("Vuoi disdire dei posti? (si/no): ");
+            String risposta = scanner.nextLine().trim().toLowerCase();
+            if (!risposta.equals("si") && !risposta.equals("no")) { 
+                System.out.println("Errore: la risposta deve essere 'si' o 'no'.");
+                continue; 
+            }
+            if (!risposta.equals("si")) 
+                return;
+
+            while (true) {
+                try {
+                    System.out.println("Quanti posti vuoi disdire? ");
+                    int disdette = Integer.parseInt(scanner.nextLine());
+
+                    if (disdette <= 0)
+                        throw new ExceptionNumeroNegativo("Inserisci un numero positivo.");
+                    if (disdette > evento.getPostiPrenotati()) {
+                        throw new ExceptionNumeroEccessivo("Non puoi disdire più posti di quanti ne hai prenotati.");
+                    }
+
+                    for (int i = 0; i < disdette; i++) {
+                        evento.disdiciPrenotazione();
+                    }
+                    System.out.println("Disdette effettuate. Posti prenotati rimanenti: " + evento.getPostiPrenotati());
+                    return;
+
+                } catch (NumberFormatException e) {
+                    System.out.println("Errore: inserisci un numero intero valido.");
+                } catch (ExceptionNumeroNegativo | ExceptionNumeroEccessivo | ExceptionNessunaPrenotazione e) {
+                    System.out.println("Errore: " + e.getMessage());
+                }
+            }
+        }
     }
 }
